@@ -1,0 +1,43 @@
+# This script downloads all of the data that is current available.
+# And places the data into pins boards.
+# Currently I am just using a local board.
+
+
+
+
+#### Download Data ####
+
+# Task View Snapshot
+library(RWsearch)
+tvdb_down(dir = "Data/")
+
+
+# CRAN snapshot 
+## Data extracted from CRAN package repository
+CRAN_data = tools::CRAN_package_db()
+# There are some packages that are given twice.
+# Most common difference in rows labeled as belonging to the same package is dependency on a more recent version of R.
+# I have ignored the extra information and just removed duplicated packages.
+CRAN_data = CRAN_data[!duplicated(CRAN_data$Package),]
+
+
+### all_CRAN_pks is all of the current packages available in CRAN
+all_CRAN_pks = CRAN_data$Package
+
+
+## CRAN_data cleaned and converted into form that can be used by cranly
+CRAN_cranly_data = clean_CRAN_db(packages_db = CRAN_data) 
+
+
+
+#### Pin data to board ####
+
+library(pins)
+board = board_folder(path = "Pins_board/")
+
+board %>% pin_write(CRAN_data, "CRAN_data")
+board %>% pin_write(CRAN_cranly_data, "CRAN_cranly_data")
+board %>% pin_write(all_CRAN_pks, "all_CRAN_pks")
+board %>% pin_write(tvdb, "tvdb", type = "rds")
+
+
