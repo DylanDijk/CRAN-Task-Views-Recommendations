@@ -102,7 +102,7 @@ no_tsk_downloads_ls[[n_chunks]] = no_tsk_downloads %>%
   summarise(sum = sum(count)) %>%
   filter(sum > 2500)
 
-board %>% pin_write(no_tsk_downloads_ls, "no_tsk_downloads_ls", type = "rds")
+# board %>% pin_write(no_tsk_downloads_ls, "no_tsk_downloads_ls", type = "rds")
 
 
 
@@ -120,7 +120,7 @@ nrow(rbindlist(no_tsk_downloads_ls)) + 1
 no_tsk_pckgs_meet_threshold = c(rbindlist(no_tsk_downloads_ls)$package, "R")
 #save(no_tsk_pckgs_meet_threshold, file = paste0("Code/Multinomial_models/Predictors/",date,"/no_taskview_pckgs_that_meet_threshold.RData"))
 
-board %>% pin_write(no_tsk_pckgs_meet_threshold, "no_tsk_pckgs_meet_threshold", type = "rds")
+# board %>% pin_write(no_tsk_pckgs_meet_threshold, "no_tsk_pckgs_meet_threshold", type = "rds")
 
 
 

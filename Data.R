@@ -30,14 +30,14 @@ CRAN_cranly_data = clean_CRAN_db(packages_db = CRAN_data)
 
 
 
-#### Pin data to board ####
-
-library(pins)
-board = board_folder(path = "Pins_board/")
-
-board %>% pin_write(CRAN_data, "CRAN_data")
-board %>% pin_write(CRAN_cranly_data, "CRAN_cranly_data")
-board %>% pin_write(all_CRAN_pks, "all_CRAN_pks")
-board %>% pin_write(tvdb, "tvdb", type = "rds")
+# #### Pin data to board ####
+# 
+# library(pins)
+# board = board_folder(path = "Pins_board/")
+# 
+# board %>% pin_write(CRAN_data, "CRAN_data")
+# board %>% pin_write(CRAN_cranly_data, "CRAN_cranly_data")
+# board %>% pin_write(all_CRAN_pks, "all_CRAN_pks")
+# board %>% pin_write(tvdb, "tvdb", type = "rds")
 
 

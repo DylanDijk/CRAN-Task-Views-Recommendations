@@ -1,14 +1,14 @@
 library(pins)
 board = board_folder(path = "Pins_board/")
 
-features                    = board %>% pin_read("features")
-response_matrix             = board %>% pin_read("response_matrix")
-final_package_names         = board %>% pin_read("final_package_names")
-tvdb                        = board %>% pin_read("tvdb")
+# features                    = board %>% pin_read("features")
+# response_matrix             = board %>% pin_read("response_matrix")
+# final_package_names         = board %>% pin_read("final_package_names")
+# tvdb                        = board %>% pin_read("tvdb")
 
 
 # Loading vector of packages with no Task View assignment that do not meet threshold
-no_tsk_pckgs_meet_threshold = board %>% pin_read("no_tsk_pckgs_meet_threshold")
+# no_tsk_pckgs_meet_threshold = board %>% pin_read("no_tsk_pckgs_meet_threshold")
 no_tsk_pckgs_meet_threshold = base::intersect(no_tsk_pckgs_meet_threshold, final_package_names)
 no_tsk_pckgs_meet_threshold = unique(no_tsk_pckgs_meet_threshold)
 
@@ -60,11 +60,11 @@ train_res_sparse <- sparse.model.matrix(~0 + ., as.data.frame(train_res))
 
 set.seed(3)
 model_multinom_cv = cv.glmnet(x = train_sparse,  y = train_res, family = "multinomial", alpha = 1)
-board %>% pin_write(model_multinom_cv, "model_multinom_cv", type = "rds")
+# board %>% pin_write(model_multinom_cv, "model_multinom_cv", type = "rds")
 
 
 
-model_multinom_cv = board %>% pin_read("model_multinom_cv")
+# model_multinom_cv = board %>% pin_read("model_multinom_cv")
 
 
 
@@ -264,7 +264,7 @@ predicted_probs_for_suggestions["multxpert",]
 
 #### Vetiver ####
 # vetiver does not accept the cv.glmnet model type
-model_multinom_cv = board %>% pin_read("model_multinom_cv")
+# model_multinom_cv = board %>% pin_read("model_multinom_cv")
 library(tidymodels)
 tidy_model_multinom_cv = broom::tidy(model_multinom_cv)
 

@@ -13,12 +13,12 @@ library(lubridate)
 
 ########## Data #########################
 library(pins)
-board = board_folder(path = "Pins_board/")
-
-tvdb             = board %>% pin_read("tvdb")
-CRAN_data        = board %>% pin_read("CRAN_data")
-CRAN_cranly_data = board %>% pin_read("CRAN_cranly_data")
-all_CRAN_pks     = board %>% pin_read("all_CRAN_pks")
+# board = board_folder(path = "Pins_board/")
+# 
+# tvdb             = board %>% pin_read("tvdb")
+# CRAN_data        = board %>% pin_read("CRAN_data")
+# CRAN_cranly_data = board %>% pin_read("CRAN_cranly_data")
+# all_CRAN_pks     = board %>% pin_read("all_CRAN_pks")
 
 
 
@@ -39,11 +39,11 @@ for(i in 1:length(which(unlist(lapply(CRAN_cranly_data$author, length)) == 0))){
 
 
 # Building author and package networks
-All_data = board %>% pin_read("All_data")
+# All_data = board %>% pin_read("All_data")
 aut_network <- build_network(CRAN_cranly_data, perspective = 'author')
 pac_network <- build_network(CRAN_cranly_data, perspective = 'package')
 All_data = list("aut_network" = aut_network, "pac_network" = pac_network)
-board %>% pin_write(All_data, "All_data", type = "rds")
+# board %>% pin_write(All_data, "All_data", type = "rds")
 
 
 # All_data_igraph = as.igraph(All_data$pac_network)
@@ -68,7 +68,7 @@ packages_assigned_Task_View = unique(packages_assigned_Task_View)
 
 ########################################################################################## 
 
-taskviews_of_pckgs     = board %>% pin_read("taskviews_of_pckgs")
+# taskviews_of_pckgs     = board %>% pin_read("taskviews_of_pckgs")
 # Creating list of packages with the task views assigned to each one
 # This code is a modified version of the generating_taskviews script
 
@@ -89,7 +89,7 @@ for(j in 1:length(packages_assigned_Task_View)){
 names(taskviews_of_pckgs) = packages_assigned_Task_View
 
 #taskviews_of_pckgs$trackeR
-board %>% pin_write(taskviews_of_pckgs, "taskviews_of_pckgs", type = "rds")
+# board %>% pin_write(taskviews_of_pckgs, "taskviews_of_pckgs", type = "rds")
 
 
 
@@ -152,7 +152,7 @@ taskviews_pac_network_rem_edges_igraph = delete.edges(pac_network_igraph, soft_d
 
 
 
-feature_matrix_all_neighbour_pkgs     = board %>% pin_read("feature_matrix_all_neighbour_pkgs")
+# feature_matrix_all_neighbour_pkgs     = board %>% pin_read("feature_matrix_all_neighbour_pkgs")
 # Creating matrix where for each package it gives the proportion of immediate hard dependencies.
 # In the `neighbours` function `mode` is set to `c("all")` meaning that we are looking at on both
 # dependencies of a package and its reverse dependencies.
@@ -172,7 +172,7 @@ for(i in 1:length(all_CRAN_pks)){
 
 rownames(feature_matrix_all_neighbour_pkgs) = all_CRAN_pks
 
-board %>% pin_write(feature_matrix_all_neighbour_pkgs, "feature_matrix_all_neighbour_pkgs", type = "rds")
+# board %>% pin_write(feature_matrix_all_neighbour_pkgs, "feature_matrix_all_neighbour_pkgs", type = "rds")
 
 
 
@@ -184,7 +184,7 @@ board %>% pin_write(feature_matrix_all_neighbour_pkgs, "feature_matrix_all_neigh
 
 ##### Load Features using text data of packages #####
 # This has been created in the NLP R script. Reliant on the number of package available on GitHub page.
-feature_matrix_titles_descriptions_packages_cosine     = board %>% pin_read("feature_matrix_titles_descriptions_packages_cosine")
+# feature_matrix_titles_descriptions_packages_cosine     = board %>% pin_read("feature_matrix_titles_descriptions_packages_cosine")
 #source(file = "NLP.R")
 #load(file = "Data/feature_matrix_titles_descriptions_packages_cosine.RData")
 
@@ -196,7 +196,7 @@ feature_matrix_titles_descriptions_packages_cosine     = board %>% pin_read("fea
 
 
 ##### Proportion of other packages that Author worked on  ####
-feature_matrix_author_task_views = board %>% pin_read("feature_matrix_author_task_views")
+# feature_matrix_author_task_views = board %>% pin_read("feature_matrix_author_task_views")
 
 # calculated by taking the authors of the package, getting the packages that they worked on.
 # Then looking at the proportion of the assignment to Task Views of these packages
@@ -241,7 +241,7 @@ row.names(feature_matrix_author_task_views) = names(authors_of_packages)
 colnames(feature_matrix_author_task_views) = paste0(colnames(feature_matrix_author_task_views), ".Author_props")
 #save(feature_matrix_author_task_views, file = paste0("Code/Multinomial_models/Predictors/",date,"/feature_matrix_author_task_views.RData"))
 
-board %>% pin_write(feature_matrix_author_task_views, "feature_matrix_author_task_views", type = "rds")
+# board %>% pin_write(feature_matrix_author_task_views, "feature_matrix_author_task_views", type = "rds")
 
 
 
@@ -333,7 +333,7 @@ features = features[,colnames(features) != "Row.names"]
 
 
 
-board %>% pin_write(features, "features", type = "rds")
-board %>% pin_write(response_matrix, "response_matrix", type = "rds")
-board %>% pin_write(final_package_names, "final_package_names", type = "rds")
-
+# board %>% pin_write(features, "features", type = "rds")
+# board %>% pin_write(response_matrix, "response_matrix", type = "rds")
+# board %>% pin_write(final_package_names, "final_package_names", type = "rds")
+# 

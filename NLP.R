@@ -8,10 +8,10 @@ library(lsa)
 library(RWsearch)
 
 ##### Reading and Cleaning Text for all Task Views  #####
-library(pins)
-board = board_folder(path = "Pins_board/")
-
-tvdb             = board %>% pin_read("tvdb")
+# library(pins)
+# board = board_folder(path = "Pins_board/")
+# 
+# tvdb             = board %>% pin_read("tvdb")
 
 
 TaskViews = tvdb_vec()
@@ -298,7 +298,7 @@ return(text_ls_cln)
 }
 
 titles_descriptions_packages_freq = pblapply(titles_descriptions_packages_ls_cln, fun1)
-board %>% pin_write(titles_descriptions_packages_freq, "titles_descriptions_packages_freq", type = "rds")
+# board %>% pin_write(titles_descriptions_packages_freq, "titles_descriptions_packages_freq", type = "rds")
 
 
 # Merging package vectors with Task View vectors and then taking cosine similarity
@@ -319,13 +319,13 @@ fun2 = function(x){
 }
 
 titles_descriptions_packages_cosine = pblapply(titles_descriptions_packages_freq, fun2)
-board %>% pin_write(titles_descriptions_packages_cosine, "titles_descriptions_packages_cosine", type = "rds")
+# board %>% pin_write(titles_descriptions_packages_cosine, "titles_descriptions_packages_cosine", type = "rds")
 
 # which.max(unlist(lapply(titles_descriptions_packages_cosine, function(x){x["OfficialStatistics"]})))
 # unlist(lapply(titles_descriptions_packages_cosine, function(x){x["OfficialStatistics"]}))[which.max(unlist(lapply(titles_descriptions_packages_cosine, function(x){x["OfficialStatistics"]})))]
 
 feature_matrix_titles_descriptions_packages_cosine = titles_descriptions_packages_cosine
-board %>% pin_write(feature_matrix_titles_descriptions_packages_cosine, "feature_matrix_titles_descriptions_packages_cosine", type = "rds")
+# board %>% pin_write(feature_matrix_titles_descriptions_packages_cosine, "feature_matrix_titles_descriptions_packages_cosine", type = "rds")
 
 # The date will be whatever date that the getPackagesWithTitle() function was run
 # library(lubridate)
