@@ -25,7 +25,6 @@ labelled_data_features = features[rownames(labelled_data_res),]
 
 # labelled_data_res_df = rbind(response_df[!(response_df[,"TaskViews"] == "none"),], response_df[no_tsk_pckgs_meet_threshold,])
 
-
 set.seed(3)
 split1<- sample(c(rep(0, 0.8 * nrow(labelled_data_res)), rep(1, 0.2 * nrow(labelled_data_res))))
 table(split1)
@@ -68,41 +67,6 @@ board %>% pin_write(model_multinom_cv, "model_multinom_cv", type = "rds")
 model_multinom_cv = board %>% pin_read("model_multinom_cv")
 
 
-#### Trying to convert into tidymodel form
-library(tidymodels)
-
-labelled_data_features_xGb
-label_XGb
-
-tidymodel_multinom_data = labelled_data_features_xGb
-tidymodel_multinom_data$TaskView = factor(label_XGb)
-tidymodel_multinom_data = as_tibble(tidymodel_multinom_data)
-
-mr_cls_spec <- 
-  multinom_reg(penalty = model_multinom_cv$lambda.min) %>% 
-  set_engine("glmnet")
-mr_cls_spec
-
-set.seed(3)
-split1<- sample(c(rep(0, 0.8 * nrow(tidymodel_multinom_data)), rep(1, 0.2 * nrow(tidymodel_multinom_data))))
-tidymodel_multinom_data_train = tidymodel_multinom_data[split1 == 0,]
-tidymodel_multinom_data_test = tidymodel_multinom_data[split1 == 1,]
-
-
-mr_cls_fit <- mr_cls_spec %>% fit(TaskView ~ ., data = tidymodel_multinom_data_train)
-mr_cls_fit
-
-predict(mr_cls_fit, tidymodel_multinom_data_test)
-
-library(vetiver)
-v = vetiver_model(mr_cls_fit, "mr_cls_fit")
-
-multinom_reg(mode = "classification",
-             engine = "glmnet",
-             penalty = model_multinom_cv$lambda.min,
-             mixture = 1) %>%
-  fit(train_res ~ ., data = train_features)
-
 
 
 #### XGboost ####
@@ -118,7 +82,6 @@ head(train_features)
 head(train_res)
 
 head(labelled_data_features)
-
 
 label_XGb = c()
 for(i in 1:nrow(labelled_data_res)){
@@ -192,17 +155,75 @@ print(paste("Final Accuracy =",sprintf("%1.2f%%", 100*result)))
 
 
 
+
+#### Trying to convert into tidymodel form
+library(tidymodels)
+
+head(labelled_data_features_xGb)
+head(label_XGb)
+
+tidymodel_multinom_data = labelled_data_features_xGb
+tidymodel_multinom_data$TaskView = factor(label_XGb)
+tidymodel_multinom_data = as_tibble(tidymodel_multinom_data)
+
+set.seed(3)
+split1<- sample(c(rep(0, 0.8 * nrow(tidymodel_multinom_data)), rep(1, 0.2 * nrow(tidymodel_multinom_data))))
+tidymodel_multinom_data_train = tidymodel_multinom_data[split1 == 0,]
+tidymodel_multinom_data_test = tidymodel_multinom_data[split1 == 1,]
+
+mr_cls_fit <- mr_cls_spec %>% fit(TaskView ~ ., data = tidymodel_multinom_data_train)
+mr_cls_fit
+
+predict(mr_cls_fit, tidymodel_multinom_data_test)
+
+library(vetiver)
+v = vetiver_model(mr_cls_fit, "mr_cls_fit")
+
+multinom_reg(mode = "classification",
+             engine = "glmnet",
+             penalty = model_multinom_cv$lambda.min,
+             mixture = 1) %>%
+  fit(train_res ~ ., data = train_features)
+
+
+
+#### Trying tidymodels workflow ####
+# This example shows how the data should be formatted: https://parsnip.tidymodels.org/articles/Examples.html#multinom_reg-models
+# This page goes through some more technical aspects of using the glmnet engine with tidymodels: https://parsnip.tidymodels.org/reference/glmnet-details.html
+# I used the code from: https://stackoverflow.com/questions/71397075/why-does-deploying-a-tidymodel-with-vetiver-throw-a-error-when-theres-a-variabl
+tskviews_recipe <- 
+  recipe(formula = TaskView ~ ., data = tidymodel_multinom_data_train) 
+
+rf_spec <- multinom_reg(mode = "classification", penalty = model_multinom_cv$lambda.min,
+                        mixture = 1) %>% 
+                        set_engine("glmnet", path_values = model_multinom_cv$lambda.min)
+
+rf_fit <-
+  workflow() %>%
+  add_model(rf_spec) %>%
+  add_recipe(tskviews_recipe) %>%
+  fit(tidymodel_multinom_data_train)
+
+mean(as.data.frame(predict(rf_fit, tidymodel_multinom_data_test[,-ncol(tidymodel_multinom_data_test)]))[,1] == tidymodel_multinom_data_test$TaskView)
+
+library(vetiver)
+v <- vetiver_model(rf_fit, "tsk_views_tidymodel")
+
+
 #### Accuracy ####
 
 
 model = model_multinom_cv
 predict_class = predict(model, newx = cbind(rep(1, nrow(test_feature)),as.matrix(test_feature)), s = "lambda.min",  type = "class")
-
 # Getting accuracy of model after applying lasso with min Lambda
 predict_class = factor(predict_class[,1], levels = c(tvdb_vec(), "none"))
 
+model = model_multinom
+predict_class = predict(model, newx = cbind(rep(1, nrow(test_feature)),as.matrix(test_feature)),  type = "class")
+predict_class = factor(predict_class, levels = c(tvdb_vec(), "none"))
 
-# 77.5% accuracy
+
+
 mean(test_res[cbind(1:nrow(test_res), predict_class)], na.rm = T)
 
 apply(test_res[which(test_res[cbind(1:nrow(test_res), predict_class)] == 0),],2,sum)
@@ -220,7 +241,6 @@ predict_prob = predict(model, newx = cbind(rep(1, nrow(test_feature)),as.matrix(
 #load(file = paste0("Code/Multinomial_models/Predictors/",date,"/no_taskview_pckgs_that_meet_threshold.RData"))
 pkgs_for_suggestions = all_CRAN_pks[!(all_CRAN_pks %in% no_tsk_pckgs_meet_threshold) & response_matrix[,"none"] == 1]
 pkgs_for_suggestions_features = features[pkgs_for_suggestions,]
-
 pkgs_for_suggestions_features = pkgs_for_suggestions_features[!apply(as.matrix(pkgs_for_suggestions_features),1, function(x){any(is.na(x))}),]
 
 
