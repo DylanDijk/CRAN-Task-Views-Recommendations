@@ -259,12 +259,18 @@ predicted_probs_for_suggestions = data.frame(predicted_probs_for_suggestions)
 colnames(predicted_probs_for_suggestions) = gsub(x = colnames(predicted_probs_for_suggestions), pattern = "\\.1", "")
 predicted_probs_for_suggestions$Packages = row.names(predicted_probs_for_suggestions)
 
-board %>% pin_write(predicted_probs_for_suggestions, "predicted_probs_for_suggestions")
 
 
+# board =       legacy_github(
+#               repo = "DylanDijk/CRAN-Task-Views-Recommendations"
+#             )
+# 
+# p = predicted_probs_for_suggestions
+# board %>% pin(p, "p")
+# board %>% pin_write(predicted_probs_for_suggestions, "predicted_probs_for_suggestions")
 
 
-
+saveRDS(predicted_probs_for_suggestions, file = "predicted_probs_for_suggestions.RDS")
 
 
 
