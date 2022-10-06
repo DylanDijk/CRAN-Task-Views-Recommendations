@@ -270,7 +270,14 @@ predicted_probs_for_suggestions$Packages = row.names(predicted_probs_for_suggest
 # board %>% pin_write(predicted_probs_for_suggestions, "predicted_probs_for_suggestions")
 
 
-saveRDS(predicted_probs_for_suggestions, file = "predicted_probs_for_suggestions.RDS")
+
+
+
+
+
+# predicted_probs_for_suggestions = board %>% pin_read("predicted_probs_for_suggestions")
+
+save(predicted_probs_for_suggestions, file = "predicted_probs_for_suggestions.rda")
 
 
 
