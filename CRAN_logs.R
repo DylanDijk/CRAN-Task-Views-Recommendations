@@ -59,7 +59,7 @@ for(i in tvdb_vec()){
 
 #####
 
-#### Finding packages that have no assigned Task View that mee the decided download threshold ####
+#### Finding packages that have no assigned Task View that meet the decided download threshold ####
 # Vector of package names that do not have a Task View
 no_tsk_view_packages = V(pac_network_igraph)$name[!(V(pac_network_igraph)$name %in% Reduce(c,tvdb_pkgs(tvdb_vec())))]
 # Remove R package, as it cannot be queried with other packages with cran_downloads

@@ -1,14 +1,11 @@
 # This script downloads all of the data that is current available.
-# And places the data into pins boards.
-# Currently I am just using a local board.
-
-
 
 
 #### Download Data ####
 
 # Task View Snapshot
 library(RWsearch)
+library(cranly)
 tvdb_down(dir = "Data/")
 
 
@@ -27,6 +24,13 @@ all_CRAN_pks = CRAN_data$Package
 
 ## CRAN_data cleaned and converted into form that can be used by cranly
 CRAN_cranly_data = clean_CRAN_db(packages_db = CRAN_data) 
+
+
+
+
+
+
+
 
 
 

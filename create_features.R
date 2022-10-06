@@ -4,6 +4,7 @@ library(cranly)
 library(RWsearch)
 library(lubridate)
 
+
 # I think the best way to do this will be to have separate scripts that create the data objects.
 # Such as: the objects are downloaded, the intermediary objects made to create the features and the
 # features (from the NLP script as well)
@@ -12,7 +13,7 @@ library(lubridate)
 # For now I am going to pin stuff as I go, but the workflow needs to be re-organised. 
 
 ########## Data #########################
-library(pins)
+#library(pins)
 # board = board_folder(path = "Pins_board/")
 # 
 # tvdb             = board %>% pin_read("tvdb")

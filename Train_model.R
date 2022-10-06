@@ -1,5 +1,5 @@
-library(pins)
-board = board_folder(path = "Pins_board/")
+#library(pins)
+#board = board_folder(path = "Pins_board/")
 
 # features                    = board %>% pin_read("features")
 # response_matrix             = board %>% pin_read("response_matrix")
@@ -277,7 +277,7 @@ predicted_probs_for_suggestions$Packages = row.names(predicted_probs_for_suggest
 
 # predicted_probs_for_suggestions = board %>% pin_read("predicted_probs_for_suggestions")
 
-save(predicted_probs_for_suggestions, file = "predicted_probs_for_suggestions.rda")
+#save(predicted_probs_for_suggestions, file = "predicted_probs_for_suggestions.rda")
 
 
 
