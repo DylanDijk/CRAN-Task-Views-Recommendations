@@ -30,6 +30,11 @@ library(pbapply)
 
 
 
+# This script creates the NLP features for the model using Task View text and Package description text.
+message("Creating the NLP features for the model using Task View text and Package description text")
+
+
+
 
 
 ##### Reading and Cleaning Text for all Task Views  #####
@@ -345,7 +350,7 @@ feature_matrix_titles_descriptions_packages_cosine = titles_descriptions_package
 #save(feature_matrix_titles_descriptions_packages_cosine, file = paste0("Data/feature_matrix_titles_descriptions_packages_cosine.RData"))
 
 #### Garbage Collection #####
-
+library(pryr)
 message(
   paste("memory freed up:",
 mem_change(

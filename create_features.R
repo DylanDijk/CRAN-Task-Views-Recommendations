@@ -10,14 +10,17 @@ library(lubridate)
 # CRAN_data
 # CRAN_cranly_data
 # all_CRAN_pks
-
-
-#### Objects Outputted ####
 # feature_matrix_titles_descriptions_packages_cosine
 
 
+##### Objects Outputted ####
+# response_matrix
+# features
+# All_data
+# pac_network_igraph
 
-########## Data #########################
+current_objects = ls()
+
 
 #### pins code ####
 #library(pins)
@@ -30,7 +33,7 @@ library(lubridate)
 
 #########
 
-
+#### Replacing missing authors with maintainers ####
 # For some packages on CRAN the authors have not been listed in the standard way.
 # Which causes these packages to have zero authors listed.
 # The work around I have used is by setting the maintainer as the author
@@ -44,9 +47,11 @@ for(i in 1:length(which(unlist(lapply(CRAN_cranly_data$author, length)) == 0))){
   CRAN_cranly_data$author[[index_of_no_authors[i]]] = CRAN_cranly_data$maintainer[index_of_no_authors[i]]
 }
 
+#######
 
 
-# Building author and package networks
+
+##### Building author and package networks ####
 # All_data = board %>% pin_read("All_data")
 aut_network <- build_network(CRAN_cranly_data, perspective = 'author')
 pac_network <- build_network(CRAN_cranly_data, perspective = 'package')
@@ -66,7 +71,7 @@ packages_assigned_Task_View = packages_assigned_Task_View[!(packages_assigned_Ta
 # Removing duplicates
 packages_assigned_Task_View = unique(packages_assigned_Task_View)
 
-
+#######
 
 # Just looking at Hard Depenedencies
 # dep_imp_edges = which(!is.element(E(All_taskviews_igraph)$type, c("depends","imports", "linking_to"))) 
@@ -76,8 +81,10 @@ packages_assigned_Task_View = unique(packages_assigned_Task_View)
 
 ########################################################################################## 
 
+
+#### Creating list of packages with the task views assigned to each one ####
+
 # taskviews_of_pckgs     = board %>% pin_read("taskviews_of_pckgs")
-# Creating list of packages with the task views assigned to each one
 # This code is a modified version of the generating_taskviews script
 
 taskviews_of_pckgs = vector(mode = "list", length = length(packages_assigned_Task_View))
@@ -141,6 +148,7 @@ rownames(response_matrix) = all_CRAN_pks
 ########## Creating features/predictors ######
 
 ##### Creating  Proportion of neighboring packages feature matrix ####
+message("Creating  Proportion of neighboring packages feature matrix")
 # creating graph object removing soft dependencies
 
 # Giving a Task View attribute to the pac_network
@@ -204,6 +212,7 @@ rownames(feature_matrix_all_neighbour_pkgs) = all_CRAN_pks
 
 
 ##### Proportion of other packages that Author worked on  ####
+message("Creating Proportion of other packages that Author worked on feature matrix")
 # feature_matrix_author_task_views = board %>% pin_read("feature_matrix_author_task_views")
 
 # calculated by taking the authors of the package, getting the packages that they worked on.
@@ -255,9 +264,6 @@ colnames(feature_matrix_author_task_views) = paste0(colnames(feature_matrix_auth
 
 
 ###### 
-
-
-
 
 
 
@@ -345,3 +351,25 @@ features = features[,colnames(features) != "Row.names"]
 # board %>% pin_write(response_matrix, "response_matrix", type = "rds")
 # board %>% pin_write(final_package_names, "final_package_names", type = "rds")
 # 
+
+
+
+#### Garbage Collection #####
+objects_created = ls()[-pmatch(current_objects,ls())]
+objects_needed = c("response_matrix","features","All_data","pac_network_igraph","final_package_names") 
+objects_to_remove = objects_created[-pmatch(intersect(objects_needed,objects_created),objects_created)]
+
+library(pryr)
+message(
+  paste("memory freed up:",
+        mem_change(
+          rm(list = objects_to_remove)
+        )
+  )
+)
+
+rm(objects_created, objects_needed, objects_to_remove)
+
+mem_change(
+rm(feature_matrix_titles_descriptions_packages_cosine, CRAN_cranly_data, CRAN_data)
+)
