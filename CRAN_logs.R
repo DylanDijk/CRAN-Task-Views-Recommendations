@@ -142,7 +142,7 @@ no_tsk_pckgs_meet_threshold = c(rbindlist(no_tsk_downloads_ls)$package, "R")
 
 
 #### Garbage Collection #####
-objects_needed = c("response_matrix","features","tvdb","no_tsk_pckgs_meet_threshold", "final_package_names") 
+objects_needed = c("response_matrix","features","tvdb","no_tsk_pckgs_meet_threshold", "final_package_names", "all_CRAN_pks") 
 
 
 

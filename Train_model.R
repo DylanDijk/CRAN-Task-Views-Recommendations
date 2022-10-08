@@ -10,13 +10,15 @@ library(Matrix)
 # final_package_names
 # features
 # response_matrix
+# all_CRAN_pks
 
 ##### Objects Outputted ####
 # predicted_probs_for_suggestions
 
 
 # setwd("~/Documents/Projects/CRAN-Task-Views-Recommendations")
-load(file = "objects_saved_before_Train_model_script.rda")
+#save(list = ls(),file = "objects_saved_before_Train_model_script.rda")
+#load(file = "objects_saved_before_Train_model_script.rda")
 current_objects = ls()
 
 
@@ -83,7 +85,7 @@ train_res_sparse <- sparse.model.matrix(~0 + ., as.data.frame(train_res))
 
 message("Training model")
 set.seed(3)
-model_multinom_cv = cv.glmnet(x = train_sparse,  y = train_res, family = "multinomial", alpha = 1)
+model_multinom_cv = cv.glmnet(x = train_sparse,  y = train_res, family = "multinomial", alpha = 1, trace.it = 1,  maxit = 1e+06)
 # board %>% pin_write(model_multinom_cv, "model_multinom_cv", type = "rds")
 
 
@@ -243,9 +245,9 @@ predict_class = predict(model, newx = cbind(rep(1, nrow(test_feature)),as.matrix
 # Getting accuracy of model after applying lasso with min Lambda
 predict_class = factor(predict_class[,1], levels = c(tvdb_vec(), "none"))
 
-model = model_multinom
-predict_class = predict(model, newx = cbind(rep(1, nrow(test_feature)),as.matrix(test_feature)),  type = "class")
-predict_class = factor(predict_class, levels = c(tvdb_vec(), "none"))
+# model = model_multinom
+# predict_class = predict(model, newx = cbind(rep(1, nrow(test_feature)),as.matrix(test_feature)),  type = "class")
+# predict_class = factor(predict_class, levels = c(tvdb_vec(), "none"))
 
 
 
@@ -283,7 +285,12 @@ predicted_probs_for_suggestions = data.frame(predicted_probs_for_suggestions)
 colnames(predicted_probs_for_suggestions) = gsub(x = colnames(predicted_probs_for_suggestions), pattern = "\\.1", "")
 predicted_probs_for_suggestions$Packages = row.names(predicted_probs_for_suggestions)
 
-#save(predicted_probs_for_suggestions, file = "predicted_probs_for_suggestions.rda")
+#save(predicted_probs_for_suggestions, file = "Output/predicted_probs_for_suggestions.rda")
+#save(model, file = "Output/model.rda")
+
+
+
+
 
 
 # board =       legacy_github(

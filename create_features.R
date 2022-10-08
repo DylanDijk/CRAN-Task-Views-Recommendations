@@ -356,7 +356,7 @@ features = features[,colnames(features) != "Row.names"]
 
 #### Garbage Collection #####
 objects_created = ls()[-pmatch(current_objects,ls())]
-objects_needed = c("response_matrix","features","All_data","pac_network_igraph","final_package_names") 
+objects_needed = c("response_matrix","features","All_data","pac_network_igraph","final_package_names", "all_CRAN_pks") 
 objects_to_remove = objects_created[-pmatch(intersect(objects_needed,objects_created),objects_created)]
 
 library(pryr)
