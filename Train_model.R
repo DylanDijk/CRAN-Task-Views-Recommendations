@@ -251,7 +251,8 @@ predict_class = factor(predict_class[,1], levels = c(tvdb_vec(), "none"))
 
 
 
-mean(test_res[cbind(1:nrow(test_res), predict_class)], na.rm = T)
+model_accuracy = mean(test_res[cbind(1:nrow(test_res), predict_class)], na.rm = T)
+model_accuracy = 100*model_accuracy
 
 apply(test_res[which(test_res[cbind(1:nrow(test_res), predict_class)] == 0),],2,sum)
 
@@ -285,8 +286,8 @@ predicted_probs_for_suggestions = data.frame(predicted_probs_for_suggestions)
 colnames(predicted_probs_for_suggestions) = gsub(x = colnames(predicted_probs_for_suggestions), pattern = "\\.1", "")
 predicted_probs_for_suggestions$Packages = row.names(predicted_probs_for_suggestions)
 
-#save(predicted_probs_for_suggestions, file = "Output/predicted_probs_for_suggestions.rda")
-#save(model, file = "Output/model.rda")
+save(predicted_probs_for_suggestions, file = "Output/predicted_probs_for_suggestions.rda")
+save(model_accuracy, file = "Output/model_accuracy.rda")
 
 
 
